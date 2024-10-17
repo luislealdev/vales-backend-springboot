@@ -1,14 +1,12 @@
 package com.luisrrleal.vales_backend_springboot.controller;
 
 import com.luisrrleal.vales_backend_springboot.dto.VoucherDTO;
-import com.luisrrleal.vales_backend_springboot.entity.VoucherEntity;
 import com.luisrrleal.vales_backend_springboot.service.VoucherService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/vouchers")
@@ -19,22 +17,22 @@ public class VoucherController {
 
     // Endpoint para obtener todos los vouchers
     @GetMapping
-    public ResponseEntity<List<VoucherEntity>> getAllVouchers() {
+    public ResponseEntity<List<VoucherDTO>> getAllVouchers() {
         return ResponseEntity.ok(voucherService.getAllVouchers());
     }
 
     // Endpoint para crear un voucher
     @PostMapping
-    public ResponseEntity<VoucherEntity> createVoucher(@RequestBody VoucherDTO voucherDTO) {
-        VoucherEntity voucher = voucherService.createVoucher(voucherDTO);
+    public ResponseEntity<VoucherDTO> createVoucher(@RequestBody VoucherDTO voucherDTO) {
+        VoucherDTO voucher = voucherService.createVoucher(voucherDTO);
         return ResponseEntity.ok(voucher);
     }
 
     // Endpoint para buscar un voucher por código
     @GetMapping("/{code}")
-    public ResponseEntity<VoucherEntity> findByCode(@PathVariable String code) {
-        Optional<VoucherEntity> voucher = voucherService.findByCode(code);
-        return voucher.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    public ResponseEntity<VoucherDTO> findByCode(@PathVariable String code) {
+        VoucherDTO voucher = voucherService.findByCode(code);
+        return ResponseEntity.ok(voucher);
     }
 
     // Endpoint para eliminar un voucher

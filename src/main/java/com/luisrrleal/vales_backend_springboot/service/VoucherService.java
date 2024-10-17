@@ -1,14 +1,13 @@
 package com.luisrrleal.vales_backend_springboot.service;
 
-import java.util.List;
-import java.util.Optional;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.luisrrleal.vales_backend_springboot.dto.VoucherDTO;
 import com.luisrrleal.vales_backend_springboot.entity.VoucherEntity;
 import com.luisrrleal.vales_backend_springboot.repository.VoucherRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class VoucherService {
@@ -16,30 +15,53 @@ public class VoucherService {
     @Autowired
     private VoucherRepository voucherRepository;
 
-    // Método para obtener todos los vouchers
-    public List<VoucherEntity> getAllVouchers() {
-        return voucherRepository.findAll();
+    // Obtener todos los vouchers
+    public List<VoucherDTO> getAllVouchers() {
+        List<VoucherEntity> vouchers = voucherRepository.findAll();
+        return vouchers.stream()
+                .map(this::convertToDto)
+                .collect(Collectors.toList());
     }
 
-    // Método para crear un nuevo voucher
-    public VoucherEntity createVoucher(VoucherDTO voucherDTO) {
-        VoucherEntity voucher = new VoucherEntity();
-        voucher.setCode(voucherDTO.getCode());
-        voucher.setAmount(voucherDTO.getAmount());
-        voucher.setCreationDate(voucherDTO.getCreationDate());
-        voucher.setDueDate(voucherDTO.getDueDate());
-        // Lógica adicional para asociar al cliente
-
-        return voucherRepository.save(voucher);
+    // Crear un voucher
+    public VoucherDTO createVoucher(VoucherDTO voucherDTO) {
+        VoucherEntity voucherEntity = convertToEntity(voucherDTO);
+        VoucherEntity savedVoucher = voucherRepository.save(voucherEntity);
+        return convertToDto(savedVoucher);
     }
 
-    // Método para encontrar un voucher por código
-    public Optional<VoucherEntity> findByCode(String code) {
-        return voucherRepository.findByCode(code);
+    // Encontrar un voucher por código
+    public VoucherDTO findByCode(String code) {
+        VoucherEntity voucher = voucherRepository.findByCode(code)
+                .orElseThrow(() -> new RuntimeException("Vale no encontrado con el código: " + code));
+        return convertToDto(voucher);
     }
 
-    // Método para eliminar un voucher
+    // Eliminar un voucher por ID
     public void deleteVoucher(Long id) {
         voucherRepository.deleteById(id);
+    }
+
+    // Convertir Entity a DTO
+    private VoucherDTO convertToDto(VoucherEntity voucherEntity) {
+        VoucherDTO dto = new VoucherDTO();
+        dto.setId(voucherEntity.getId());
+        dto.setCode(voucherEntity.getCode());
+        dto.setAmount(voucherEntity.getAmount());
+        dto.setCreationDate(voucherEntity.getIssueDate());
+        dto.setDueDate(voucherEntity.getExpirationDate());
+        dto.setCustomerId(voucherEntity.getCustomer().getId());
+        return dto;
+    }
+
+    // Convertir DTO a Entity
+    private VoucherEntity convertToEntity(VoucherDTO voucherDTO) {
+        VoucherEntity entity = new VoucherEntity();
+        entity.setCode(voucherDTO.getCode());
+        entity.setAmount(voucherDTO.getAmount());
+        entity.setIssueDate(voucherDTO.getCreationDate());
+        entity.setExpirationDate(voucherDTO.getDueDate());
+        // Suponiendo que el cliente ya está cargado en el servicio
+        return entity;
     }
 }

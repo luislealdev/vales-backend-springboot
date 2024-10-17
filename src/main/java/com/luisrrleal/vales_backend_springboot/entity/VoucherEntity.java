@@ -1,49 +1,55 @@
 package com.luisrrleal.vales_backend_springboot.entity;
 
 import java.time.LocalDate;
-import java.util.List;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
 @Entity
-@Table(name = "voucher")
 public class VoucherEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true)
-    private String code; // Código único del vale
+    private String code;
+    private double amount;
+    private LocalDate issueDate;
+    private LocalDate expirationDate;
+    private boolean isPaid;
+
+    @ManyToOne
+    @JoinColumn(name = "distributor_id", nullable = false)
+    private DistributorEntity distributor;
 
     @ManyToOne
     @JoinColumn(name = "customer_id", nullable = false)
     private CustomerEntity customer;
 
-    @Column(nullable = false)
-    private Double amount;
+    // Getters y setters
 
-    @Column(nullable = false)
-    private LocalDate creationDate;
+    public DistributorEntity getDistributor() {
+        return distributor;
+    }
 
-    @Column(nullable = false)
-    private LocalDate dueDate;
+    public void setDistributor(DistributorEntity distributor) {
+        this.distributor = distributor;
+    }
 
-    @Column(nullable = false)
-    private Boolean isPaid;
+    public CustomerEntity getCustomer() {
+        return customer;
+    }
 
-    @OneToMany(mappedBy = "voucher", cascade = CascadeType.ALL)
-    private List<PaymentEntity> payments;
+    public void setCustomer(CustomerEntity customer) {
+        this.customer = customer;
+    }
+
+    // Otros getters y setters
 }

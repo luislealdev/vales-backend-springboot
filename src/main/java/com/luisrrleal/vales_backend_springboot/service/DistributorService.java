@@ -27,4 +27,10 @@ public class DistributorService {
     public void deleteDistributor(Long id) {
         distributorRepository.deleteById(id);
     }
+
+    public DistributorEntity getDistributorByEmail(String email) {
+        return distributorRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Distribuidor no encontrado con el email: " + email));
+    }
+
 }
