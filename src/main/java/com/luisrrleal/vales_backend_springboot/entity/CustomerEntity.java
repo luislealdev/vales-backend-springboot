@@ -1,7 +1,6 @@
 package com.luisrrleal.vales_backend_springboot.entity;
 
 import java.util.List;
-
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -31,20 +30,19 @@ public class CustomerEntity {
     @Column(nullable = false)
     private String address;
 
-    @Column(unique = true)
-    private String ine;
+    @Column(nullable = false, unique = true)
+    private String ine; // Documento de identidad (INE)
 
-    @Column(unique = true)
-    private String curp;
+    @Column(nullable = false, unique = true)
+    private String curp; // Registro único de población (CURP)
 
     @Column(nullable = false)
-    private String addressProof;
+    private String proofOfAddress; // Comprobante de domicilio
+
+    @ManyToOne
+    @JoinColumn(name = "distributor_id", nullable = false)
+    private DistributorEntity distributor;
 
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
     private List<VoucherEntity> vouchers;
-
-    @ManyToOne
-    @JoinColumn(name = "distributor_id") // Foreign key en la tabla de clientes
-    private DistributorEntity distributor;
-
 }

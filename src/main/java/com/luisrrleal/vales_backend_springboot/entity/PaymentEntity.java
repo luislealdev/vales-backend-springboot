@@ -1,7 +1,6 @@
 package com.luisrrleal.vales_backend_springboot.entity;
 
 import java.time.LocalDate;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -27,17 +26,9 @@ public class PaymentEntity {
     @JoinColumn(name = "voucher_id", nullable = false)
     private VoucherEntity voucher;
 
-    @ManyToOne
-    @JoinColumn(name = "distributor_id", nullable = false)
-    private DistributorEntity distributor;
+    @Column(nullable = false)
+    private Double amount;
 
     @Column(nullable = false)
     private LocalDate paymentDate;
-
-    @Column(nullable = false)
-    private Double amountPaid;
-
-    @Column(nullable = false)
-    private Boolean isLate;
-
 }

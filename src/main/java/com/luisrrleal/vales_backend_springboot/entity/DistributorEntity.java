@@ -1,7 +1,6 @@
 package com.luisrrleal.vales_backend_springboot.entity;
 
 import java.util.List;
-
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -26,10 +25,12 @@ public class DistributorEntity {
     @Column(nullable = false)
     private String name;
 
-    @Column(unique = true, nullable = false)
-    private String distributorCode;
+    @Column(nullable = false, unique = true)
+    private String email;
+
+    @Column(nullable = false)
+    private String phoneNumber;
 
     @OneToMany(mappedBy = "distributor", cascade = CascadeType.ALL)
     private List<CustomerEntity> customers;
-
 }
